@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: ai-apps-client
+    rootDir: packages/client
+    buildCommand: curl -fsSL https://bun.sh/install | bash && export BUN_INSTALL=$HOME/.bun && export PATH=$BUN_INSTALL/bin:$PATH && bun install && bun run build
+    staticPublishPath: dist
+    autoDeploy: true
+    pullRequestPreviewsEnabled: true
+    runtime: static
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://ai-apps-server.onrender.com/api/:splat
+      - type: rewrite
+        source: /*
+        destination: /index.html
+  - type: web
+    name: ai-apps-server
+    rootDir: packages/server
+    runtime: node
+    buildCommand: curl -fsSL https://bun.sh/install | bash && export BUN_INSTALL=$HOME/.bun && export PATH=$BUN_INSTALL/bin:$PATH && bun install
+    startCommand: curl -fsSL https://bun.sh/install | bash && export BUN_INSTALL=$HOME/.bun && export PATH=$BUN_INSTALL/bin:$PATH && bun run start
+    autoDeploy: true
+    pullRequestPreviewsEnabled: true
+    healthCheckPath: /api/promotions
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
