@@ -12,8 +12,14 @@ export default defineConfig({
       },
    },
    server: {
+      host: true,
+      port: Number(process.env.PORT) || 5173,
       proxy: {
          '/api': 'https://server-production-c682.up.railway.app',
       },
+   },
+   preview: {
+      host: true,
+      port: Number(process.env.PORT) || 5173,
    },
 });
